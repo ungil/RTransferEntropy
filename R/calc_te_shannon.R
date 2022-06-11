@@ -4,8 +4,22 @@
 # transfer entropy measure is Shannon transfer entropy. Used internally by
 # transfer_entropy; same arguments.
 #
-calc_te_shannon <- function(x, lx, y, ly) {
-
+calc_te_shannon <- function(x, lx, y, ly, jidt = FALSE, jidtCompat = FALSE, jidtDebug = FALSE) {
+  if (jidt){
+    x <- x-min(x)
+    y <- y-min(y)    
+    rJava::.jinit()
+    rJava::.jaddClassPath(system.file("infodynamics.jar", package="RTransferEntropy"))
+    teCalc <- rJava::.jnew("infodynamics/measures/discrete/TransferEntropyCalculatorDiscrete",
+                           as.integer(max(x,y)+1), as.integer(lx), as.integer(ly))
+    rJava::.jcall(teCalc, "V", "initialise") # V for void return value
+    rJava::.jcall(teCalc, "V", "addObservations", as.integer(y), as.integer(x)) # source, dest
+    shan_entropy <- rJava::.jcall(teCalc, "D", "computeAverageLocalOfObservations")
+    if (jidtDebug && (abs(shan_entropy-calc_te_shannon(x, lx, y, ly, jidtCompat=TRUE))>1e-6)){
+        rJava::.jcall(teCalc, "V", "debugPrintObservations")
+        print(list(x=x, lx=lx, y=y, ly=ly))
+    }
+  }else{
   # Frequencies
   #------------------------------
   # x(k+1) and y(j)
@@ -13,13 +27,13 @@ calc_te_shannon <- function(x, lx, y, ly) {
   nck1_j <- length(k1_j)
 
   # x(k+1)
-  k1 <- cluster_gen(x, lx = lx)
+  k1 <- cluster_gen(if (jidtCompat & ly>lx) x[-(1:(ly-lx))] else x, lx = lx)
 
   # x(k) and y(j)
   k_j <- cluster_gen(x, lx = lx, y, ly = ly, prog = FALSE)
 
   # x(k)
-  k <- cluster_gen(x, lx = lx, prog = FALSE)
+  k <- cluster_gen(if (jidtCompat & ly>lx) x[-(1:(ly-lx))] else x, lx = lx, prog = FALSE)
 
   # Transfer entropy
   #------------------------------
@@ -34,6 +48,7 @@ calc_te_shannon <- function(x, lx, y, ly) {
   }
 
   shan_entropy <- sum(entropy)
-
+  }
+  
   return(shan_entropy)
 }

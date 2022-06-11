@@ -6,7 +6,10 @@ bootstrap_shannon <- function(x,
                               lx,
                               y,
                               ly,
-                              burn = 50) {
+                              burn = 50,
+                              jidt = FALSE,
+                              jidtCompat = FALSE,
+                              jidtDebug = FALSE) {
   bootx <- markov_boot_step(x, lx, burn)
   booty <- markov_boot_step(y, ly, burn)
 
@@ -15,7 +18,10 @@ bootstrap_shannon <- function(x,
     x = bootx,
     lx = lx,
     y = y,
-    ly = ly
+    ly = ly,
+    jidt = jidt,
+    jidtCompat = jidtCompat,
+    jidtDebug = jidtDebug
   )
 
   # Lead = y
@@ -23,7 +29,10 @@ bootstrap_shannon <- function(x,
     x = booty,
     lx = ly,
     y = x,
-    ly = lx
+    ly = lx,
+    jidt = jidt,
+    jidtCompat = jidtCompat,
+    jidtDebug = jidtDebug    
   )
 
   teboot <- c(dtexy, dteyx)

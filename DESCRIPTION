@@ -18,7 +18,8 @@ Depends:
 Imports:
     future (>= 1.19.0),
     future.apply,
-    Rcpp
+    Rcpp,
+    rJava
 LazyData: true
 RoxygenNote: 7.1.1
 LinkingTo: Rcpp

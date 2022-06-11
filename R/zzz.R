@@ -37,7 +37,10 @@ calc_te_ete <- function(restype = "te",
                         limits = NULL,
                         burn = 50,
                         seed = NULL,
-                        na.rm = TRUE) {
+                        na.rm = TRUE,
+                        jidt = FALSE,
+                        jidtCompat = FALSE,
+                        jidtDebug = FALSE) {
   if (!is.null(seed)) set.seed(seed)
 
   restype <- tolower(restype)
@@ -152,14 +155,17 @@ calc_te_ete <- function(restype = "te",
 
   # only calculate the X->Y direction
   if (entropy == "shannon") {
-    te <- calc_te_shannon(y, lx = ly, x, ly = lx)
+    te <- calc_te_shannon(y, lx = ly, x, ly = lx, jidt = jidt, jidtCompat = jidtCompat, jidtDebug = jidtDebug)
     if (restype == "ete") {
       consty <- shuffle_shannon(
         x = y,
         lx = ly,
         y = x,
         ly = lx,
-        shuffles = shuffles
+        shuffles = shuffles,
+        jidt = jidt,
+        jidtCompat = jidtCompat,
+        jidtDebug = jidtDebug,        
       )
       ete <- te - consty
       ete <- max(0, ete)

@@ -12,7 +12,10 @@ te_shannon <- function(x,
                        limits,
                        nboot,
                        burn,
-                       quiet) {
+                       quiet,
+                       jidt = FALSE,
+                       jidtCompat = FALSE,
+                       jidtDebug = FALSE) {
 
   # Code time series
   x <- code_sample(x, type, quantiles, bins, limits)
@@ -20,25 +23,31 @@ te_shannon <- function(x,
 
   # Lead = y
   if (!quiet) cat("  [calculate] X->Y transfer entropy\n")
-  texy <- calc_te_shannon(y, lx = ly, x, ly = lx)
+  texy <- calc_te_shannon(y, lx = ly, x, ly = lx, jidt = jidt, jidtCompat = jidtCompat, jidtDebug = jidtDebug)
   consty <- shuffle_shannon(
     x = y,
     lx = ly,
     y = x,
     ly = lx,
-    shuffles = shuffles
+    shuffles = shuffles,
+    jidt = jidt,
+    jidtCompat = jidtCompat,
+    jidtDebug = jidtDebug
   )
   stexy <- texy - consty
 
   # Lead = x
   if (!quiet) cat("  [calculate] Y->X transfer entropy\n")
-  teyx <- calc_te_shannon(x, lx = lx, y, ly = ly)
+  teyx <- calc_te_shannon(x, lx = lx, y, ly = ly, jidt = jidt, jidtCompat = jidtCompat, jidtDebug = jidtDebug)
   constx <- shuffle_shannon(
     x = x,
     lx = lx,
     y = y,
     ly = ly,
-    shuffles = shuffles
+    shuffles = shuffles,
+    jidt = jidt,
+    jidtCompat = jidtCompat,
+    jidtDebug = jidtDebug
   )
   steyx <- teyx - constx
 
