@@ -109,7 +109,10 @@ transfer_entropy <- function(x,
                              burn = 50,
                              quiet = NULL,
                              seed = NULL,
-                             na.rm = TRUE) {
+                             na.rm = TRUE,
+                             jidt = FALSE,
+                             jidtCompat = FALSE,
+                             jidtDebug = FALSE) {
   if (!is.null(seed)) set.seed(seed)
 
   t0 <- Sys.time()
@@ -248,7 +251,10 @@ transfer_entropy <- function(x,
       limits = limits,
       nboot = nboot,
       burn = burn,
-      quiet = quiet
+      quiet = quiet,
+      jidt = jidt,
+      jidtCompat = jidtCompat,
+      jidtDebug = jidtDebug
     )
   } else {
     te <- te_renyi(
